@@ -1,0 +1,536 @@
+{{-- home.php --}}
+<?php include 'navbar.php'; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dikna Berliana Putri - Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #00bcd4;
+            --accent2: #ffa726;
+            --glass: rgba(255,255,255,0.08);
+            --glass-border: rgba(255,255,255,0.2);
+            --text: #ffffff;
+            --text-muted: rgba(255,255,255,0.65);
+            --overlay-nav: rgba(10, 20, 30, 0.97);
+            --nav-width: 300px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920') no-repeat center center;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.52);
+            z-index: 1;
+        }
+
+        /* ───── SIDE NAV ───── */
+        .nav-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            z-index: 100;
+            pointer-events: none;
+            transition: background 0.4s ease;
+        }
+        .nav-overlay.open {
+            background: rgba(0,0,0,0.45);
+            pointer-events: all;
+        }
+
+        .side-nav {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--nav-width);
+            height: 100%;
+            background: var(--overlay-nav);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            transform: translateX(100%);
+            transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -8px 0 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+        .side-nav.open {
+            transform: translateX(0);
+        }
+
+        /* Decorative top bar */
+        .side-nav::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            flex-shrink: 0;
+        }
+
+        .nav-header {
+            padding: 30px 30px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .nav-profile-mini {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .nav-profile-mini img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+        .nav-profile-mini .nav-name {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+            letter-spacing: 0.5px;
+        }
+        .nav-profile-mini .nav-role {
+            font-size: 11px;
+            color: var(--accent2);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+            color: var(--text-muted);
+            font-size: 18px;
+            line-height: 1;
+        }
+        .nav-close:hover {
+            background: rgba(255,255,255,0.15);
+            transform: rotate(90deg);
+            color: white;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 18px 0;
+            flex: 1;
+        }
+
+        .nav-links li {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .side-nav.open .nav-links li:nth-child(1) { opacity:1; transform:translateX(0); transition-delay: 0.10s; }
+        .side-nav.open .nav-links li:nth-child(2) { opacity:1; transform:translateX(0); transition-delay: 0.15s; }
+        .side-nav.open .nav-links li:nth-child(3) { opacity:1; transform:translateX(0); transition-delay: 0.20s; }
+        .side-nav.open .nav-links li:nth-child(4) { opacity:1; transform:translateX(0); transition-delay: 0.25s; }
+        .side-nav.open .nav-links li:nth-child(5) { opacity:1; transform:translateX(0); transition-delay: 0.30s; }
+        .side-nav.open .nav-links li:nth-child(6) { opacity:1; transform:translateX(0); transition-delay: 0.35s; }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 30px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            border-left: 3px solid transparent;
+            transition: color 0.2s, border-color 0.2s, background 0.2s, padding-left 0.2s;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+            border-left-color: var(--accent);
+            background: rgba(0,188,212,0.07);
+            padding-left: 36px;
+        }
+
+        .nav-icon {
+            width: 18px;
+            text-align: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.07);
+            margin: 8px 30px;
+        }
+
+        .nav-footer {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .nav-socials {
+            display: flex;
+            gap: 12px;
+        }
+        .nav-socials a {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .nav-socials a:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        .nav-footer-note {
+            margin-top: 14px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 0.5px;
+        }
+
+        /* ───── MAIN CARD ───── */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ───── HAMBURGER BUTTON ───── */
+        .menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+            transition: transform 0.3s, background 0.3s;
+            box-shadow: 0 4px 16px rgba(0,188,212,0.4);
+            z-index: 10;
+        }
+        .menu-btn:hover { transform: scale(1.1); background: #0097a7; }
+
+        .menu-btn span {
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: transform 0.3s, opacity 0.3s;
+            transform-origin: center;
+        }
+        .menu-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .menu-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .menu-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ───── LEFT SECTION ───── */
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 2px solid var(--glass-border);
+            padding: 40px 20px;
+            border-radius: 15px;
+        }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.4);
+            margin-bottom: 30px;
+            object-fit: cover;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+        .name {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .title {
+            font-size: 12px;
+            color: var(--accent2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* ───── RIGHT SECTION ───── */
+        .right-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--text);
+        }
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            color: var(--text);
+        }
+        .description {
+            color: var(--text-muted);
+            line-height: 1.85;
+            margin-bottom: 36px;
+            font-size: 14px;
+        }
+        .info-list { display: flex; flex-direction: column; gap: 14px; }
+        .info-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+        .info-item:last-child { border-bottom: none; }
+        .info-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 600;
+        }
+        .info-value {
+            font-size: 14px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-value::before { content: ':'; color: rgba(255,255,255,0.35); }
+        .info-value a { color: var(--text); text-decoration: none; transition: color 0.2s; }
+        .info-value a:hover { color: var(--accent); text-decoration: none; }
+        .info-value a:visited { color: var(--text); }
+
+        /* ───── RESPONSIVE ───── */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; padding: 30px 20px; }
+            .name { font-size: 18px; }
+            .section-title { font-size: 20px; }
+            .info-item { grid-template-columns: 1fr; gap: 4px; }
+            .info-value::before { display: none; }
+            .side-nav { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    {{-- ── Side Navigation ── --}}
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <nav class="side-nav" id="sideNav">
+        <button class="nav-close" id="navClose" aria-label="Close menu">&#x2715;</button>
+
+        <div class="nav-header">
+            <div class="nav-profile-mini">
+                 <img src="images/profile.jpg" alt="Profile">
+                <div>
+                    <div class="nav-name">Dikna Berliana<br>Putri</div>
+                    <div class="nav-role">Web Developer</div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="nav-links">
+    <li>
+        <a href="{{ route('home') }}" class="active nav-item-link">
+            <span class="nav-icon">🏠</span> Home
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('about') }}" class="nav-item-link">
+            <span class="nav-icon">👤</span> About Me
+        </a>
+    </li>
+
+    <div class="nav-divider"></div>
+
+    <li>
+        <a href="{{ route('skills') }}" class="nav-item-link">
+            <span class="nav-icon">⚡</span> Skills
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('portfolio') }}" class="nav-item-link">
+            <span class="nav-icon">🗂️</span> Portfolio
+        </a>
+    </li>
+    <li>
+        <a href="{{ route('experience') }}" class="nav-item-link">
+            <span class="nav-icon">📋</span> Experience
+        </a>
+    </li>
+</ul>
+
+        <div class="nav-footer">
+            <div class="nav-socials">
+                <a href="https://wa.me/6285786186094" target="_blank" title="WhatsApp">
+                    💬
+                </a>
+                <a href="https://www.instagram.com/diknaputri4" target="_blank" title="Instagram">
+                    📸
+                </a>
+                <a href="mailto:diknaputri122@gmail.com" title="Email">
+                    📧
+                </a>
+            </div>
+            <p class="nav-footer-note">© 2025 Dikna Berliana Putri</p>
+        </div>
+    </nav>
+
+    {{-- ── Main Card ── --}}
+    <div class="container" id="home">
+        <button class="menu-btn" id="menuBtn" aria-label="Open navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="left-section">
+            <img src="{{ asset('images/profile.jpg') }}" alt="Dikna Berliana Putri" class="profile-image">
+            <h1 class="name">Dikna Berliana Putri</h1>
+            <p class="title">Web Developer</p>
+        </div>
+
+        <div class="right-section">
+            <h2 class="section-title">HOME</h2>
+            <p class="description">
+                selamat datang di halaman profile saya
+            </p>
+
+            <div class="info-list">
+                <div class="info-item">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">
+                        <a href="https://wa.me/6285786186094" target="_blank">085786186094</a>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Address</span>
+                    <span class="info-value">Wonosobo, Jawa Tengah</span>
+                </div>
+                 <div class="info-item">
+                    <span class="info-label">E-mail</span>
+                    <span class="info-value">
+                        <a href="mailto:diknaputri122@gmail.com?subject=Halo%20Dikna&body=Halo%2C%20saya%20ingin%20menghubungi%20Anda."
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        diknaputri122@gmail.com
+                        </a>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Instagram</span>
+                    <span class="info-value">
+                        <a href="https://www.instagram.com/diknaputri4" target="_blank">@diknaputri4</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const menuBtn   = document.getElementById('menuBtn');
+        const sideNav   = document.getElementById('sideNav');
+        const navClose  = document.getElementById('navClose');
+        const navOverlay = document.getElementById('navOverlay');
+        const navLinks  = document.querySelectorAll('.nav-item-link');
+
+        function openNav() {
+            sideNav.classList.add('open');
+            navOverlay.classList.add('open');
+            menuBtn.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNav() {
+            sideNav.classList.remove('open');
+            navOverlay.classList.remove('open');
+            menuBtn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', () => {
+            sideNav.classList.contains('open') ? closeNav() : openNav();
+        });
+
+        navClose.addEventListener('click', closeNav);
+        navOverlay.addEventListener('click', closeNav);
+
+        // Active link highlight on click
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                setTimeout(closeNav, 250); // close after short delay
+            });
+        });
+
+        // Close nav on Escape key
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeNav();
+        });
+    </script>
+</body>
+</html>
